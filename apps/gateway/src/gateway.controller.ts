@@ -6,7 +6,11 @@ export class GatewayController {
   constructor(private readonly gatewayService: GatewayService) {}
 
   @Get()
-  getHello(): string {
-    return this.gatewayService.getHello();
+  health() {
+    return {
+      ok: true,
+      service: 'Gateway',
+      now: new Date().toISOString(),
+    };
   }
 }
