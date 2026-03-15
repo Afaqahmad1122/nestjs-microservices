@@ -1,0 +1,45 @@
+version: '3'
+
+services: # Define the services that make up our application
+  rabbitmq: # Service name for RabbitMQ
+    image: rabbitmq:3-management # Use the official RabbitMQ image with management plugin
+    ports: # Map ports from container to host
+      - '5672:5672' # AMQP port (for messaging)
+      - '15672:15672' # Management UI port (http://localhost:15672)
+    environment: # Environment variables for the container
+      RABBITMQ_DEFAULT_USER: guest # Default username
+      RABBITMQ_DEFAULT_PASS: guest # Default password
+    volumes: # Persist data and logs
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/ # Data volume
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq # Log volume
+    networks: # Connect to the shared network
+      - microservices-network
+
+  postgres: # Service name for PostgreSQL
+    image: postgres:16-alpine # Use the official PostgreSQL image (alpine is lighter)
+    ports: # Map ports
+      - '5432:5432' # Standard PostgreSQL port
+    environment: # Environment variables for the container
+      POSTGRES_USER: postgres # Root username
+      POSTGRES_PASSWORD: password # Root password (change in production!)
+      POSTGRES_DB: microservices # Default database name
+    volumes: # Persist data
+      - ~/.docker-conf/postgres/data/:/var/lib/postgresql/data # Data volume
+    networks: # Connect to the shared network
+      - microservices-network
+
+  mongodb: # Service name for MongoDB
+    image: mongo:7.0 # Use the official MongoDB image
+    ports: # Map ports
+      - '27017:27017' # Standard MongoDB port
+    environment: # Environment variables for the container
+      MONGO_INITDB_ROOT_USERNAME: root # Root username
+      MONGO_INITDB_ROOT_PASSWORD: password # Root password
+    volumes: # Persist data
+      - ~/.docker-conf/mongodb/data/:/data/db # Data volume
+    networks: # Connect to the shared network
+      - microservices-network
+
+networks: # Define the networks
+  microservices-network: # Network name
+    driver: bridge # Use the bridge driver (standard for standalone containers)

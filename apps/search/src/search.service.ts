@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
 export class SearchService {
-  getHello(): string {
-    return 'Hello World!';
+  private readonly logger = new Logger(SearchService.name);
+
+  indexItem(data: any) {
+    this.logger.log('Indexing item...', data);
   }
 }
